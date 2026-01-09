@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
@@ -120,7 +120,7 @@
   users.users.shane = {
     isNormalUser = true;
     description = "Shane McAfee";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "wireshark" ];
     packages = with pkgs; [
       kdePackages.kate
     #  thunderbird
@@ -130,6 +130,9 @@
   # Install firefox.
   programs.firefox.enable = true;
 
+  #install wireshark
+  programs.wireshark.enable = true;
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -138,11 +141,11 @@
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    discord
-    keepassxc
-    protonvpn-gui
     bluez
     bluez-tools
+    git
+    gcc
+    gnumake
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -164,15 +167,6 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-# Home Manager Configuration
-  home-manager = {
-    # Pass inputs to home-manager modules
-    extraSpecialArgs = { inherit inputs; };
-    users.shane = import ./home.nix;
-  };
-
-  system.stateVersion = "25.11"; 
-}
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -182,4 +176,12 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
+  # home manager setup
+  home-manager = {
+    extraSpecialArgs = { inherit inputs; };
+    users.shane = import ./home.nix;
+    useGlobalPkgs = true;
+    useUserPackages = true;
+  };
 }
+

@@ -1,45 +1,55 @@
 { config, pkgs, ... }:
 
 {
-  # Home Manager needs a bit of information about you and the paths it should manage.
   home.username = "shane";
   home.homeDirectory = "/home/shane";
 
-  # Packages that should be installed to the user profile.
+  # --- USER PACKAGES ---
   home.packages = with pkgs; [
-    fastfetch
-    ripgrep
-    # You can move packages from configuration.nix here if they are just for you
+    # 1. Computer Engineering (C++, Python, Debugging)
+    python3
+    cmake
+    gdb
+    ripgrep  # Super fast 'grep' alternative
+    fd       # Super fast 'find' alternative
+
+    # 2. Web Development
+    nodejs_22
+    yarn
+
+    # 3. Cyber Security
+    nmap        # Network Scanner
+    burpsuite   # Web vulnerability scanner
+    ghidra      # Reverse Engineering tool
+
+    # 4. Productivity & General
+    obsidian       # Notes
+    libreoffice-qt # Office
+    zoom-us
+    keepassxc      # Passwords
+    protonvpn-gui
+    fastfetch      # System Info
+    vlc            # Media Player
   ];
 
-  # Basic Git configuration (Example of Home Manager managing dotfiles)
+  # --- PROGRAM CONFIGURATIONS ---
+  
+  # VS Code (Installing it this way makes it available to you)
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode; 
+  };
+
+  # Git Configuration (So you don't have to run 'git config --global' commands)
   programs.git = {
     enable = true;
-    userName = "ShaneMcAfee";
-    userEmail = "shanemcafee10@gmail.com";
+    userName = "Shane McAfee";
+    userEmail = "change-this-to-your-email@example.com";
   };
 
-  # Bash configuration
-  programs.bash = {
-    enable = true;
-    enableCompletion = true;
-    # TODO: Add your custom bash aliases here
-    shellAliases = {
-      ll = "ls -l";
-      update = "sudo nixos-rebuild switch";
-    };
-  };
-
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-  home.stateVersion = "24.11"; # Keep consistent with your install time
-  
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  # This version should match your install time (do not change usually)
+  home.stateVersion = "24.11";
 }
