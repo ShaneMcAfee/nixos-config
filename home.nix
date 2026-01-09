@@ -43,8 +43,13 @@
   # Git Configuration (So you don't have to run 'git config --global' commands)
   programs.git = {
     enable = true;
-    userName = "Shane McAfee";
-    userEmail = "change-this-to-your-email@example.com";
+    # "userName" and "userEmail" are replaced by this structure:
+    settings = {
+      user = {
+        name = "Shane McAfee";
+        email = "shanemcafee10@gmail.com";
+      };
+    };
   };
 
   # Let Home Manager install and manage itself.
