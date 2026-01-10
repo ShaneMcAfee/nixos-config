@@ -38,6 +38,9 @@
   # Fingerprint sensor support
   services.fprintd.enable = true;
 
+  # Power Management (Recommended for Ryzen AI 300)
+  services.power-profiles-daemon.enable = true;
+
   # --- GRAPHICS (Radeon 890M) ---
   hardware.graphics = {
     enable = true;
