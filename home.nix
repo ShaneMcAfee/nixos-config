@@ -42,6 +42,12 @@
     package = pkgs.vscode; 
   };
 
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true; # Hooks into your shell
+    nix-direnv.enable = true;    # Caches the environment so it's fast
+  };
+
   # --- SHELL CONFIGURATION ---
   programs.zsh = {
     enable = true;
@@ -51,7 +57,7 @@
 
     shellAliases = {
       # 1. 'rebuild' now uses 'nom' for pretty output and clear errors
-      rebuild = "sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
+      rebuild = "sudo -v && sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
 
       # 2. 'upgrade' updates flake.lock, then rebuilds
       upgrade = "nix flake update --flake ~/nixos-config && sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
@@ -60,10 +66,9 @@
       gc = "sudo nix-collect-garbage --delete-older-than 7d > ~/nixos-config/logs/gc-$(date +%Y-%m-%d).log 2>&1 && echo 'Garbage collected! Log saved to ~/nixos-config/logs/'";
     };
 
-    # Custom Functions
+  # Custom Functions
     initExtra = ''
       # Command: sys-save "Commit Message"
-      # Usage: sys-save "Added vscode"
       function sys-save() {
         if [ -z "$1" ]; then
           echo "❌ Error: You must provide a commit message."
@@ -71,15 +76,22 @@
           return 1
         fi
 
+        # 1. Ask for password UPFRONT so the prompt isn't hidden
+        sudo -v
+        if [ $? -ne 0 ]; then
+            echo "❌ Sudo authentication failed. Aborting."
+            return 1
+        fi
+
         echo "📦 Staging files..."
         git -C ~/nixos-config add .
 
         echo "🛠️  Rebuilding system..."
-        # Rebuild using 'nom'. If it fails, the script STOPS here.
+        # Rebuild using 'nom'. 
         if sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json; then
             echo "✅ Build Successful!"
 
-            echo "floppy_disk: Committing changes..."
+            echo "💾 Committing changes..."
             git -C ~/nixos-config commit -m "$1"
 
             echo "🚀 Pushing to GitHub..."
