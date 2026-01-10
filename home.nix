@@ -67,7 +67,7 @@
     };
 
   # Custom Functions
-    initExtra = ''
+    initContent = ''
       # Command: sys-save "Commit Message"
       function sys-save() {
         if [ -z "$1" ]; then
