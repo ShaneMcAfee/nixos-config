@@ -121,17 +121,17 @@
     isNormalUser = true;
     description = "Shane McAfee";
     extraGroups = [ "networkmanager" "wheel" "wireshark" ];
+    shell = pkgs.zsh;
     packages = with pkgs; [
       kdePackages.kate
     #  thunderbird
     ];
   };
 
-  # Install firefox.
+  # Hard Install Programs
   programs.firefox.enable = true;
-
-  #install wireshark
   programs.wireshark.enable = true;
+  programs.zsh.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
