@@ -6,6 +6,7 @@
       ./hardware-configuration.nix
       ./modules/desktop.nix
       ./modules/core.nix
+      ./modules/virtualization.nix  # <--- Added
     ];
 
   # --- FRAMEWORK 16 SPECIFICS ---
@@ -27,7 +28,8 @@
   users.users.shane = {
     isNormalUser = true;
     description = "Shane McAfee";
-    extraGroups = [ "networkmanager" "wheel" "wireshark" ];
+    # Added "libvirtd" to the list:
+    extraGroups = [ "networkmanager" "wheel" "wireshark" "libvirtd" ]; 
     shell = pkgs.zsh;
     packages = with pkgs; [ kdePackages.kate ];
   };
