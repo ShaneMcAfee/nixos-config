@@ -30,6 +30,7 @@
     protonvpn-gui
     fastfetch      # System Info
     vlc
+    discord
     nix-output-monitor
     btop
   ];

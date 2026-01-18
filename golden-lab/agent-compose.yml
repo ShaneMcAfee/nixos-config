@@ -1,0 +1,19 @@
+services:
+  # The DevOps Controller
+  # This container can see Docker (to manage siblings) and Files (to edit config)
+  devops-controller:
+    image: python:3.11-slim
+    container_name: devops-controller
+    restart: unless-stopped
+    volumes:
+      # 1. Management: Access to Docker Socket
+      - /var/run/docker.sock:/var/run/docker.sock
+      # 2. Workspace: Access to the config files
+      - ./:/workspace
+    command: sh -c "echo 'AI Agent Initialized' && tail -f /dev/null"
+    networks:
+      - golden-net
+
+networks:
+  golden-net:
+    driver: bridge
