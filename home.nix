@@ -128,7 +128,7 @@
         # Action: Switch the email configuration
         contents = {
           user = {
-            email = "your-student-email@csu.fullerton.edu"; # <--- UPDATE THIS
+            email = "shanemcafee@csu.fullerton.edu";
           };
         };
       }
