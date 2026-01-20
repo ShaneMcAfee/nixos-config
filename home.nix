@@ -116,15 +116,24 @@
   # Git Configuration (So you don't have to run 'git config --global' commands)
   programs.git = {
     enable = true;
-    # "userName" and "userEmail" are replaced by this structure:
-    settings = {
-      user = {
-        name = "Shane McAfee";
-        email = "shanemcafee10@gmail.com";
-      };
-    };
+    # Your default (Global) identity
+    userName = "Shane McAfee";
+    userEmail = "shanemcafee10@gmail.com"; 
+    
+    # --- SCHOOL IDENTITY OVERRIDE ---
+    includes = [
+      {
+        # Condition: If we are in any folder inside ~/school/...
+        condition = "gitdir:~/school/";
+        # Action: Switch the email configuration
+        contents = {
+          user = {
+            email = "your-student-email@csu.fullerton.edu"; # <--- UPDATE THIS
+          };
+        };
+      }
+    ];
   };
-
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
