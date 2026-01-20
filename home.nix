@@ -133,7 +133,7 @@ programs.git = {
         condition = "gitdir:~/school/";
         contents = {
           user = {
-            email = "your-student-email@csu.fullerton.edu";
+            email = "shanemcafee@csu.fullerton.edu";
           };
         };
       }
