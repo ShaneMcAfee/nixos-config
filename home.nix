@@ -12,6 +12,8 @@
     gdb
     ripgrep  # 'grep' alternative
     fd       # 'find' alternative
+    clang
+    clang-tools
 
     # 2. Web Development
     nodejs_22
@@ -114,26 +116,30 @@
   };
 
   # Git Configuration (So you don't have to run 'git config --global' commands)
-  programs.git = {
+programs.git = {
     enable = true;
-    # Your default (Global) identity
-    userName = "Shane McAfee";
-    userEmail = "shanemcafee10@gmail.com"; 
     
-    # --- SCHOOL IDENTITY OVERRIDE ---
+    # --- GLOBAL IDENTITY (New Structure) ---
+    settings = {
+      user = {
+        name = "Shane McAfee";
+        email = "shanemcafee10@gmail.com";
+      };
+    };
+
+    # --- SCHOOL OVERRIDE ---
     includes = [
       {
-        # Condition: If we are in any folder inside ~/school/...
         condition = "gitdir:~/school/";
-        # Action: Switch the email configuration
         contents = {
           user = {
-            email = "shanemcafee@csu.fullerton.edu";
+            email = "your-student-email@csu.fullerton.edu";
           };
         };
       }
     ];
   };
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
