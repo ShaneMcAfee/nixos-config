@@ -116,10 +116,10 @@
   };
 
   # Git Configuration (So you don't have to run 'git config --global' commands)
-programs.git = {
+  programs.git = {
     enable = true;
     
-    # --- GLOBAL IDENTITY (New Structure) ---
+    # --- GLOBAL IDENTITY (Personal) ---
     settings = {
       user = {
         name = "Shane McAfee";
@@ -130,7 +130,8 @@ programs.git = {
     # --- SCHOOL OVERRIDE ---
     includes = [
       {
-        condition = "gitdir:~/school/";
+        # Use the ABSOLUTE path to be 100% sure
+        condition = "gitdir:/home/shane/school/";
         contents = {
           user = {
             email = "shanemcafee@csu.fullerton.edu";
@@ -139,7 +140,6 @@ programs.git = {
       }
     ];
   };
-
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
