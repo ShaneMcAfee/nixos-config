@@ -68,6 +68,7 @@
 
       # 3. 'gc' logs to a file instead of spamming the terminal
       gc = "sudo nix-collect-garbage --delete-older-than 7d > ~/nixos-config/logs/gc-$(date +%Y-%m-%d).log 2>&1 && echo 'Garbage collected! Log saved to ~/nixos-config/logs/'";
+
       # 4. 'help-me' prints all custom commands
       help-me = "echo -e '\\n🛠️  CUSTOM COMMANDS:\\n  rebuild  : Apply config changes (Quick)\\n  upgrade  : Update all packages & apply (Slow)\\n  gc       : Clean up old versions (Free space)\\n  sys-save : Git Add + Build + Commit + Push (Full Save)\\n'";
 
