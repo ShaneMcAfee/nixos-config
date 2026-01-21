@@ -13,6 +13,13 @@
   services.displayManager.sddm.wayland.enable = true;
   services.desktopManager.plasma6.enable = true;
 
+  # --- LOGITECH DEVICES ---
+  services.solaar = {
+    enable = true;
+    window = "hide";
+    batteryIcons = "regular";
+  };
+
   # Keymap
   services.xserver.xkb = {
     layout = "us";

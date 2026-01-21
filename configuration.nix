@@ -24,6 +24,13 @@
   services.fprintd.enable = true;
   services.power-profiles-daemon.enable = true;
 
+  # Solaar for Logitech devices
+  services.solaar = {
+    enable = true;
+    window = "hide"; # Start in tray
+    batteryIcons = "regular";
+  };
+
   # --- USER CONFIGURATION ---
   users.users.shane = {
     isNormalUser = true;
