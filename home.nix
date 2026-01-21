@@ -59,19 +59,21 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    shellAliases = {
-      # 1. 'rebuild' now uses 'nom' for pretty output and clear errors
+shellAliases = {
+      # Core Aliases
       rebuild = "sudo -v && sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
-
-      # 2. 'upgrade' updates flake.lock, then rebuilds
       upgrade = "nix flake update --flake ~/nixos-config && sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
-
-      # 3. 'gc' logs to a file instead of spamming the terminal
       gc = "sudo nix-collect-garbage --delete-older-than 7d > ~/nixos-config/logs/gc-$(date +%Y-%m-%d).log 2>&1 && echo 'Garbage collected! Log saved to ~/nixos-config/logs/'";
+      
+      # SAFETY COMMANDS
+      # 1. Rollback: Restores the OS to the previous generation (Binaries)
+      rollback = "sudo nixos-rebuild switch --rollback";
+      
+      # 2. Undo Edits: Restores the Config Files to the last git commit (Text)
+      undo-edits = "git -C ~/nixos-config reset --hard";
 
-      # 4. 'help-me' prints all custom commands
-      help-me = "echo -e '\\n🛠️  CUSTOM COMMANDS:\\n  rebuild  : Apply config changes (Quick)\\n  upgrade  : Update all packages & apply (Slow)\\n  gc       : Clean up old versions (Free space)\\n  sys-save : Git Add + Build + Commit + Push (Full Save)\\n'";
-
+      # Help Command
+      help-me = "echo -e '\\n🛠️  CUSTOM COMMANDS:\\n  rebuild    : Apply config changes (Quick)\\n  upgrade    : Update all packages & apply (Slow)\\n  rollback   : Boot into previous OS version (Fixes broken system)\\n  undo-edits : Discard unsaved file changes (Fixes broken code)\\n  gc         : Clean up old versions (Free space)\\n  sys-save   : Git Add + Build + Commit + Push (Full Save)\\n'";
     };
 
   # Custom Functions
