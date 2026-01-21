@@ -25,6 +25,7 @@
     ghidra      # Reverse Engineering tool
 
     # 4. Productivity & General
+    ungoogled-chromium
     obsidian       # Notes
     libreoffice-qt 
     zoom-us
