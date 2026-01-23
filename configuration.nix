@@ -9,6 +9,7 @@
       ./modules/virtualization.nix  # <--- Added
     ];
 
+
   # --- FRAMEWORK 16 SPECIFICS ---
   # Kernel Params for Ryzen AI 300
   boot.kernelParams = [ "amdgpu.mes=0" "amdgpu.abmlevel=0" ];
@@ -17,6 +18,7 @@
   services.udev.extraRules = ''
     SUBSYSTEM=="usb", DRIVERS=="usb", ATTRS{idVendor}=="32ac", ATTRS{idProduct}=="0012", ATTR{power/wakeup}="disabled"
     SUBSYSTEM=="usb", DRIVERS=="usb", ATTRS{idVendor}=="32ac", ATTRS{idProduct}=="0014", ATTR{power/wakeup}="disabled"
+    SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", MODE="0660", GROUP="adbusers", TAG+="uaccess"
   '';
 
   # Firmware, Fingerprint, & Power
@@ -35,8 +37,7 @@
   users.users.shane = {
     isNormalUser = true;
     description = "Shane McAfee";
-    # Added "libvirtd" to the list:
-    extraGroups = [ "networkmanager" "wheel" "wireshark" "libvirtd" ]; 
+    extraGroups = [ "networkmanager" "wheel" "wireshark" "libvirtd" "adbusers" "plugdev" ]; 
     shell = pkgs.zsh;
     packages = with pkgs; [ kdePackages.kate ];
   };
