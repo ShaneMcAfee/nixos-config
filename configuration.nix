@@ -18,7 +18,6 @@
   services.udev.extraRules = ''
     SUBSYSTEM=="usb", DRIVERS=="usb", ATTRS{idVendor}=="32ac", ATTRS{idProduct}=="0012", ATTR{power/wakeup}="disabled"
     SUBSYSTEM=="usb", DRIVERS=="usb", ATTRS{idVendor}=="32ac", ATTRS{idProduct}=="0014", ATTR{power/wakeup}="disabled"
-    SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", MODE="0666"
   '';
 
   # Firmware, Fingerprint, & Power
@@ -37,7 +36,7 @@
   users.users.shane = {
     isNormalUser = true;
     description = "Shane McAfee";
-    extraGroups = [ "networkmanager" "wheel" "wireshark" "libvirtd" "adbusers" "plugdev" ]; 
+    extraGroups = [ "networkmanager" "wheel" "wireshark" "libvirtd"  ]; 
     shell = pkgs.zsh;
     packages = with pkgs; [ kdePackages.kate ];
   };
