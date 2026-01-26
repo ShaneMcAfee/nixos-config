@@ -1,17 +1,4 @@
 services:
-  # --- AI AGENT (DevOps Controller) ---
-  devops-controller:
-    image: python:3.11-slim
-    container_name: devops-controller
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./:/workspace
-    command: sh -c "echo 'AI Agent Ready' && tail -f /dev/null"
-    networks:
-      - caddy
-
-  # --- YOUR MEDIA STACK ---
   caddy:
     build: .
     container_name: caddy
@@ -20,62 +7,75 @@ services:
       - "80:80"
       - "443:443/tcp"
       - "443:443/udp"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     environment:
       - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - ${APPDATA_PATH}/caddy_data:/data
-      - ${APPDATA_PATH}/caddy_config:/config
+      - ./caddy_data:/data
+      - ./caddy_config:/config
+    command: ["/bin/sh", "-c", "sleep 10 && caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"]
     networks:
       - caddy
 
-  # VPN & Network Gateway
   gluetun:
     image: qmcgaw/gluetun:latest
     container_name: gluetun
     restart: unless-stopped
-    cap_add: [ "NET_ADMIN" ]
-    devices: [ "/dev/net/tun:/dev/net/tun" ]
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
     environment:
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
       - VPN_TYPE=${VPN_TYPE}
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - SERVER_COUNTRIES=United States
+      - TZ=${TZ}
+      # Removed PORT_FORWARD_ONLY to ensure connectivity first
     ports:
-      - "8080:8080" # qBittorrent
+      - "${QBITTORRENT_WEBUI_PORT}:${QBITTORRENT_WEBUI_PORT}"
+      - 8080:8080
     volumes:
-      - ${APPDATA_PATH}/gluetun:/gluetun
+      - ./gluetun:/gluetun
     networks:
       - caddy
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
+    restart: unless-stopped
     network_mode: service:gluetun
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - WEBUI_PORT=8080
+      - WEBUI_PORT=${QBITTORRENT_WEBUI_PORT}
     volumes:
       - ${APPDATA_PATH}/qbittorrent:/config
-      - ${DATA_PATH}/torrents:/data
+      - ${DOWNLOADS_PATH}/incomplete:/incomplete
+      - ${DATA_PATH}:/data
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
 
-  # *Arrs
-  radarr:
-    image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
     restart: unless-stopped
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${APPDATA_PATH}/radarr:/config
-      - ${DATA_PATH}:/data
+      - ${APPDATA_PATH}/prowlarr:/config
     networks:
       - caddy
+    labels:
+      caddy: prowlarr.${DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 9696}}"
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -90,20 +90,70 @@ services:
       - ${DATA_PATH}:/data
     networks:
       - caddy
+    labels:
+      caddy: sonarr.${DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 8989}}"
 
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
     restart: unless-stopped
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${APPDATA_PATH}/prowlarr:/config
+      - ${APPDATA_PATH}/radarr:/config
+      - ${DATA_PATH}:/data
+    networks:
+      - caddy
+    labels:
+      caddy: radarr.${DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 7878}}"
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+      - PIHOLE_DNS=unbound#5335
+    volumes:
+      - ${APPDATA_PATH}/pihole/pihole:/etc/pihole
+      - ${APPDATA_PATH}/pihole/dnsmasq.d:/etc/dnsmasq.d
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - caddy
+    depends_on:
+      - unbound
+    labels:
+      caddy: pihole.${DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 80}}"
+
+  unbound:
+    image: mvance/unbound:latest
+    container_name: unbound
+    restart: unless-stopped
+    hostname: unbound
+    volumes:
+      - ./unbound-conf:/opt/unbound/etc/unbound
+    networks:
+      - caddy
+
+  devops-controller:
+    image: python:3.11-slim
+    container_name: devops-controller
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/workspace
+    command: ["sh", "-c", "echo 'AI Agent Started' && tail -f /dev/null"]
     networks:
       - caddy
 
 networks:
   caddy:
     name: caddy
+  proxy:
+    external: true

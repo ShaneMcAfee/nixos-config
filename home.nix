@@ -14,6 +14,7 @@
     fd       # 'find' alternative
     clang
     clang-tools
+    tailscale
 
     # 2. Web Development
     nodejs_22

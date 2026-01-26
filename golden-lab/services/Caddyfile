@@ -1,3 +1,6 @@
+{
+    admin off
+}
 :80 {
-    respond "Golden Shell Caddy is Running!"
+    respond "Golden Shell Caddy - Please inject real Caddyfile content"
 }
