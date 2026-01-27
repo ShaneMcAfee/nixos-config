@@ -15,6 +15,7 @@
     clang
     clang-tools
     tailscale
+    tailscalesd
 
     # 2. Web Development
     nodejs_22
