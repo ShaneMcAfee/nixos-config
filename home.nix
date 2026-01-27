@@ -42,11 +42,45 @@
   # --- PROGRAM CONFIGURATIONS ---
   
   # VS Code (Installing it this way makes it available to you)
+# --- PROGRAM CONFIGURATIONS ---
+  
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode; 
-  };
+    package = pkgs.vscode;
+    
+    # Extensions via Nix (Stable & Patched)
+    extensions = with pkgs.vscode-extensions; [
+      # 1. The Core C++ Engine (Intellisense/Debug)
+      ms-vscode.cpptools
+      
+      # 2. Makefile Support (Crucial for your class)
+      ms-vscode.makefile-tools
+      
+    ];
 
+    # VS Code "settings.json"
+    userSettings = {
+      # --- VISUALS (Match Visual Studio) ---
+      "workbench.colorTheme" = "Visual Studio Dark"; 
+      "workbench.iconTheme" = "vs-minimal";
+      "editor.fontFamily" = "'Consolas', 'Droid Sans Mono', 'monospace'";
+      
+      # --- C++ COMPILER & STANDARD ---
+      "C_Cpp.default.compilerPath" = "clang++";
+      "C_Cpp.default.cppStandard" = "c++20";
+      "C_Cpp.intelliSenseEngine" = "default";
+
+      # --- GOOGLE STYLE GUIDE ENFORCEMENT ---
+      "C_Cpp.clang_format_style" = "Google";
+      "editor.formatOnSave" = true;
+      "[cpp]" = {
+        "editor.defaultFormatter" = "ms-vscode.cpptools";
+      };
+
+      # --- MAKEFILE CONFIGURATION ---
+      "makefile.configureOnOpen" = true;
+    };
+  };
   programs.direnv = {
     enable = true;
     enableZshIntegration = true; # Hooks into your shell
