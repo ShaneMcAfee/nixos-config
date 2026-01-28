@@ -108,6 +108,8 @@
       rollback = "sudo nixos-rebuild switch --rollback";
       undo-edits = "git -C ~/nixos-config reset --hard";
       gc = "sudo nix-collect-garbage --delete-older-than 7d > ~/nixos-config/logs/gc-$(date +%Y-%m-%d).log 2>&1 && echo 'Garbage collected! Log saved to ~/nixos-config/logs/'";
+      # Clears screen, lists tree, and dumps core config files with headers
+      dump-config = "clear && echo '--- FILE TREE ---' && ls -R ~/nixos-config && echo -e '\\n--- FLAKE.NIX ---' && cat ~/nixos-config/flake.nix && echo -e '\\n--- CONFIGURATION.NIX ---' && cat ~/nixos-config/hosts/framework16/configuration.nix && echo -e '\\n--- HOME.NIX ---' && cat ~/nixos-config/users/shane/home.nix";
       
       # --- HELP MENU ---
       help-me = "echo -e '\\n🛠️  NIXOS COMMANDS:\\n  cdnix      : Go to config folder\\n  conf-sys   : Edit System Config (nano)\\n  conf-home  : Edit Home Config (nano)\\n  code-nix   : Edit All Configs (VS Code)\\n\\n  rebuild    : Apply changes (Quick)\\n  upgrade    : Update packages (Slow)\\n  sys-save   : Git Save & Apply\\n  rollback   : Revert System Binaries\\n'";
