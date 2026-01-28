@@ -90,7 +90,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-shellAliases = {
+    shellAliases = {
       # --- NAVIGATION & EDITING ---
       cdnix = "cd ~/nixos-config";
       
