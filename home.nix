@@ -50,43 +50,37 @@
     enable = true;
     package = pkgs.vscode;
     
-    # Extensions via Nix (Stable & Patched)
-    extensions = with pkgs.vscode-extensions; [
-      # 1. The Core C++ Engine (Intellisense/Debug)
-      ms-vscode.cpptools
+    # New Home Manager Structure: "profiles.default"
+    profiles.default = {
       
-      # 2. Makefile Support (Crucial for your class)
-      ms-vscode.makefile-tools
-      
-    ];
+      # Extensions via Nix
+      extensions = with pkgs.vscode-extensions; [
+        ms-vscode.cpptools          # C++ Engine
+        ms-vscode.makefile-tools    # Makefile Support
+        # ms-vscode.vs-keybindings  # (Removed due to build error previously)
+      ];
 
-    # VS Code "settings.json"
-    userSettings = {
-      # --- VISUALS (Match Visual Studio) ---
-      "workbench.colorTheme" = "Visual Studio Dark"; 
-      "workbench.iconTheme" = "vs-minimal";
-      "editor.fontFamily" = "'Consolas', 'Droid Sans Mono', 'monospace'";
-      
-      # --- C++ COMPILER & STANDARD ---
-      "C_Cpp.default.compilerPath" = "clang++";
-      "C_Cpp.default.cppStandard" = "c++20";
-      "C_Cpp.intelliSenseEngine" = "default";
+      # VS Code Settings
+      userSettings = {
+        # Visuals
+        "workbench.colorTheme" = "Visual Studio Dark"; 
+        "workbench.iconTheme" = "vs-minimal";
+        "editor.fontFamily" = "'Consolas', 'Droid Sans Mono', 'monospace'";
+        
+        # C++ & Google Style
+        "C_Cpp.default.compilerPath" = "clang++";
+        "C_Cpp.default.cppStandard" = "c++20";
+        "C_Cpp.intelliSenseEngine" = "default";
+        "C_Cpp.clang_format_style" = "Google";
+        "editor.formatOnSave" = true;
+        "[cpp]" = {
+          "editor.defaultFormatter" = "ms-vscode.cpptools";
+        };
 
-      # --- GOOGLE STYLE GUIDE ENFORCEMENT ---
-      "C_Cpp.clang_format_style" = "Google";
-      "editor.formatOnSave" = true;
-      "[cpp]" = {
-        "editor.defaultFormatter" = "ms-vscode.cpptools";
+        # Makefile
+        "makefile.configureOnOpen" = true;
       };
-
-      # --- MAKEFILE CONFIGURATION ---
-      "makefile.configureOnOpen" = true;
     };
-  };
-  programs.direnv = {
-    enable = true;
-    enableZshIntegration = true; # Hooks into your shell
-    nix-direnv.enable = true;    # Caches the environment so it's fast
   };
 
   # --- SHELL CONFIGURATION ---
@@ -96,7 +90,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-shellAliases = {
+    shellAliases = {
       # Core Aliases
       rebuild = "sudo -v && sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
       upgrade = "nix flake update --flake ~/nixos-config && sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
