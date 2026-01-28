@@ -6,7 +6,7 @@
 
   # --- USER PACKAGES ---
   home.packages = with pkgs; [
-    # 1. Computer Engineering (C++, Python, Debugging)
+    #  Computer Engineering (C++, Python, Debugging)
     python3
     cmake
     gdb
@@ -18,16 +18,16 @@
     tailscalesd
     gtest
 
-    # 2. Web Development
+    #  Web Development
     nodejs_22
     yarn
 
-    # 3. Cyber Security
+    #  Cyber Security
     nmap        # Network Scanner
     burpsuite   # Web vulnerability scanner
     ghidra      # Reverse Engineering tool
 
-    # 4. Productivity & General
+    #  Productivity & General
     ungoogled-chromium
     obsidian       # Notes
     libreoffice-qt 
@@ -39,6 +39,7 @@
     discord
     nix-output-monitor
     btop
+    tree
   ];
 
   # --- PROGRAM CONFIGURATIONS ---
