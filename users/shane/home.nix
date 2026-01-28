@@ -90,23 +90,28 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    shellAliases = {
-      # Core Aliases
+shellAliases = {
+      # --- NAVIGATION & EDITING ---
+      cdnix = "cd ~/nixos-config";
+      
+      # Quick Edits (Terminal)
+      conf-sys  = "nano ~/nixos-config/hosts/framework16/configuration.nix";
+      conf-home = "nano ~/nixos-config/users/shane/home.nix";
+      conf-flake = "nano ~/nixos-config/flake.nix";
+      
+      # Full IDE (VS Code)
+      code-nix = "code ~/nixos-config";
+
+      # --- SYSTEM MAINTENANCE ---
       rebuild = "sudo -v && sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
       upgrade = "nix flake update --flake ~/nixos-config && sudo nixos-rebuild switch --flake ~/nixos-config --log-format internal-json -v |& nom --json";
+      rollback = "sudo nixos-rebuild switch --rollback";
+      undo-edits = "git -C ~/nixos-config reset --hard";
       gc = "sudo nix-collect-garbage --delete-older-than 7d > ~/nixos-config/logs/gc-$(date +%Y-%m-%d).log 2>&1 && echo 'Garbage collected! Log saved to ~/nixos-config/logs/'";
       
-      # SAFETY COMMANDS
-      # 1. Rollback: Restores the OS to the previous generation (Binaries)
-      rollback = "sudo nixos-rebuild switch --rollback";
-      
-      # 2. Undo Edits: Restores the Config Files to the last git commit (Text)
-      undo-edits = "git -C ~/nixos-config reset --hard";
-
-      # Help Command
-      help-me = "echo -e '\\n🛠️  CUSTOM COMMANDS:\\n  rebuild    : Apply config changes (Quick)\\n  upgrade    : Update all packages & apply (Slow)\\n  rollback   : Boot into previous OS version (Fixes broken system)\\n  undo-edits : Discard unsaved file changes (Fixes broken code)\\n  gc         : Clean up old versions (Free space)\\n  sys-save   : Git Add + Build + Commit + Push (Full Save)\\n'";
+      # --- HELP MENU ---
+      help-me = "echo -e '\\n🛠️  NIXOS COMMANDS:\\n  cdnix      : Go to config folder\\n  conf-sys   : Edit System Config (nano)\\n  conf-home  : Edit Home Config (nano)\\n  code-nix   : Edit All Configs (VS Code)\\n\\n  rebuild    : Apply changes (Quick)\\n  upgrade    : Update packages (Slow)\\n  sys-save   : Git Save & Apply\\n  rollback   : Revert System Binaries\\n'";
     };
-
   # Custom Functions
     initContent = ''
       # Command: sys-save "Commit Message"
