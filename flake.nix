@@ -22,8 +22,8 @@
       system = "x86_64-linux";
       specialArgs = {inherit inputs;};
       modules = [
-        ./hardware-configuration.nix
-        ./configuration.nix
+        ./hosts/framework16/hardware-configuration.nix
+        ./hosts/framework16/configuration.nix
         nixos-hardware.nixosModules.framework-16-amd-ai-300-series
         
         # Modules

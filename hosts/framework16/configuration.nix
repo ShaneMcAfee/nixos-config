@@ -4,9 +4,9 @@
   imports =
     [ 
       ./hardware-configuration.nix
-      ./modules/desktop.nix
-      ./modules/core.nix
-      ./modules/virtualization.nix  # <--- Added
+      ../../modules/desktop.nix
+      ../../modules/core.nix
+      ../../modules/virtualization.nix  # <--- Added
     ];
 
 
@@ -48,7 +48,7 @@
   # --- HOME MANAGER ---
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
-    users.shane = import ./home.nix;
+    users.shane = import ../../users/shane/home.nix;
     useGlobalPkgs = true;
     useUserPackages = true;
   };
