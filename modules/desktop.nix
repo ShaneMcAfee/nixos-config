@@ -1,12 +1,16 @@
 { config, pkgs, ... }:
 
 {
-  # --- GRAPHICS (Radeon 890M) ---
+# --- GRAPHICS (Radeon 890M / Framework 16) ---
   hardware.graphics = {
     enable = true;
     enable32Bit = true; # For Steam/Wine
+    
+    # OpenCL Support for AMD
+    extraPackages = with pkgs; [
+      rocmPackages.clr.icd
+    ];
   };
-
   # --- DESKTOP ENVIRONMENT (KDE Plasma 6) ---
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
