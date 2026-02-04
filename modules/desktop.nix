@@ -17,6 +17,7 @@
 
 # Workaround for software with hard-coded HIP paths (per NixOS Wiki)
   systemd.tmpfiles.rules = [
+    "d /opt/rocm 0755 root root -"
     "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
   ];
   # --- DESKTOP ENVIRONMENT (KDE Plasma 6) ---
