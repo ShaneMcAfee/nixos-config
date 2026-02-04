@@ -29,7 +29,7 @@
     hashcat     # Password cracker
     hashcat-utils
     wordlists   # Word lists for password cracking
-    intel-ocl   # Official OpenCL runtime for Intel CPUs
+    pocl        # OpenCL
 
     #  Productivity & General
     ungoogled-chromium
