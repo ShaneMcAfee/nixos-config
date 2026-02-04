@@ -10,6 +10,8 @@
     extraPackages = with pkgs; [
       rocmPackages.clr.icd  # OpenCL
       rocmPackages.clr      # Common Language Runtime
+      rocmPackages.rocminfo     # System Info Utility
+      rocmPackages.rocm-device-libs # REQUIRED for "HIP RTC" error
     ];
   };
 
