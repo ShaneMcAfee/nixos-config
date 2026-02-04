@@ -12,7 +12,7 @@ let
   };
 in
 {
-# --- GRAPHICS (Radeon 890M / Framework 16) ---
+  # --- GRAPHICS (Radeon 890M / Framework 16) ---
   hardware.graphics = {
     enable = true;
     enable32Bit = true; # For Steam/Wine
@@ -20,6 +20,9 @@ in
     # OpenCL Support for AMD
     extraPackages = with pkgs; [
       rocmPackages.clr.icd  # OpenCL
+      rocmPackages.clr          # HIP Runtime
+      rocmPackages.rocminfo     # System Info Utility
+      rocmPackages.rocm-device-libs # Device libraries (Bitcode)
     ];
   };
 
@@ -37,7 +40,7 @@ in
     # Point HIP to the bitcode files within our constructed environment
     # NixOS places these in share/amdgcn/bitcode, but some apps look elsewhere.
     # We point to the symlinkJoin path to ensure stability.
-    "HIP_DEVICE_LIB_PATH" = "/opt/rocm/share/amdgcn/bitcode";
+    "HIP_DEVICE_LIB_PATH" = "${pkgs.rocmPackages.rocm-device-libs}/amdgcn/bitcode";
   };
 
   # --- DESKTOP ENVIRONMENT (KDE Plasma 6) ---
