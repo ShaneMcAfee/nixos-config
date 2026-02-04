@@ -26,6 +26,8 @@
     nmap        # Network Scanner
     burpsuite   # Web vulnerability scanner
     ghidra      # Reverse Engineering tool
+    hashcat     # Password cracker
+    hashcat-utils
 
     #  Productivity & General
     ungoogled-chromium
