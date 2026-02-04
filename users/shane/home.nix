@@ -28,6 +28,8 @@
     ghidra      # Reverse Engineering tool
     hashcat     # Password cracker
     hashcat-utils
+    wordlists   # Word lists for password cracking
+    intel-ocl   # Official OpenCL runtime for Intel CPUs
 
     #  Productivity & General
     ungoogled-chromium
