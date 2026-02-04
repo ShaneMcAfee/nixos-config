@@ -1,5 +1,16 @@
 { config, pkgs, ... }:
 
+let
+  # Create a FHS-like ROCm directory by merging necessary packages
+  rocmEnv = pkgs.symlinkJoin {
+    name = "rocm-combined";
+    paths = with pkgs.rocmPackages; [
+      rocminfo
+      clr
+      rocm-device-libs
+    ];
+  };
+in
 {
 # --- GRAPHICS (Radeon 890M / Framework 16) ---
   hardware.graphics = {
@@ -9,17 +20,26 @@
     # OpenCL Support for AMD
     extraPackages = with pkgs; [
       rocmPackages.clr.icd  # OpenCL
-      rocmPackages.clr      # Common Language Runtime
-      rocmPackages.rocminfo     # System Info Utility
-      rocmPackages.rocm-device-libs # REQUIRED for "HIP RTC" error
     ];
   };
 
-# Workaround for software with hard-coded HIP paths (per NixOS Wiki)
+  # --- HIP WORKAROUNDS ---
+  # 1. Create a full /opt/rocm structure so HIP can find 'lib' and 'share' (for bitcode)
   systemd.tmpfiles.rules = [
-    "d /opt/rocm 0755 root root -"
-    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+    "L+  /opt/rocm  -  -  -  -  ${rocmEnv}"
   ];
+
+  # 2. Environment Variables for Ryzen AI 300 (gfx1150)
+  environment.variables = {
+    # Force RDNA 3 compatibility (gfx1100 is the closest stable target for 890M/780M)
+    "HSA_OVERRIDE_GFX_VERSION" = "11.0.0";
+    
+    # Point HIP to the bitcode files within our constructed environment
+    # NixOS places these in share/amdgcn/bitcode, but some apps look elsewhere.
+    # We point to the symlinkJoin path to ensure stability.
+    "HIP_DEVICE_LIB_PATH" = "/opt/rocm/share/amdgcn/bitcode";
+  };
+
   # --- DESKTOP ENVIRONMENT (KDE Plasma 6) ---
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
