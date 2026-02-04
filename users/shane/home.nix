@@ -44,6 +44,7 @@
     nix-output-monitor
     btop
     tree
+    clinfo
   ];
 
   # --- PROGRAM CONFIGURATIONS ---
