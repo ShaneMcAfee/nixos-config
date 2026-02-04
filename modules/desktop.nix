@@ -8,9 +8,15 @@
     
     # OpenCL Support for AMD
     extraPackages = with pkgs; [
-      rocmPackages.clr.icd
+      rocmPackages.clr.icd  # OpenCL
+      rocmPackages.clr      # Common Language Runtime
     ];
   };
+
+# Workaround for software with hard-coded HIP paths (per NixOS Wiki)
+  systemd.tmpfiles.rules = [
+    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+  ];
   # --- DESKTOP ENVIRONMENT (KDE Plasma 6) ---
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
